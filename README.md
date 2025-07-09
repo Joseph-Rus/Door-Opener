@@ -249,24 +249,6 @@ Monitor system status through:
 - Try manual reset
 - Monitor Serial for connection attempts
 
-## 📋 Future Improvements
-
-- [ ] Web interface for configuration
-- [ ] Multiple door support
-- [ ] Time-based access control
-- [ ] Battery backup system
-- [ ] Mobile app integration
-- [ ] Voice control integration
-- [ ] Security camera integration
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
