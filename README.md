@@ -39,6 +39,7 @@ A secure, remote door control system using ESP32-C6 and Telegram Bot API. Contro
 - **[Seeed Studio XIAO ESP32-C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html)** - Main microcontroller
 - **[SONOFF 5V Relay Module](https://a.co/d/8S7qjCs)** - Controls power to servo
 - **[Internal Battery - 3.7V 602030 LiPo](https://a.co/d/1w1Zyej)** - Internal backup power
+- **[External Power Bank - Anker](https://a.co/d/4TOVGFS)** - External backup power
 - **[2.4G WiFi Antenna](https://a.co/d/gJ13i0S)** - Enhanced WiFi range
 
 ### Servo Motors (Choose One)
@@ -49,6 +50,7 @@ A secure, remote door control system using ESP32-C6 and Telegram Bot API. Contro
 - Jumper wires
 - Breadboard or PCB
 - **[3.7V 602030 LiPo Battery](https://a.co/d/1w1Zyej)** - Internal backup power
+- **[Anker Power Bank](https://a.co/d/4TOVGFS)** - External backup power
 - External antenna (optional for better range)
 
 ## 💻 Software Requirements
