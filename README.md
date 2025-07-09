@@ -33,16 +33,13 @@ A secure, multi-user Telegram bot system for controlling door locks remotely usi
 - **[Jumper Wires](https://a.co/d/gJ13i0S)** - For connections
 
 ### 3D Printed Components
-The following STL files are included in this repository for 3D printing the mechanical components:
+The following STL files are included in this repository:
 
-```
-📁 3D Models/
-├── 📄 bar_to_hold_servo.stl      - Mounting bracket for servo attachment
-├── 📄 batteryholder.stl          - Battery compartment housing
-├── 📄 case.stl                   - Main enclosure for electronics
-├── 📄 lid.stl                    - Top cover for the case
-└── 📄 servo_holder.stl           - Servo mounting bracket
-```
+- `bar_to_hold_servo.stl` - Mounting bracket for servo attachment
+- `batteryholder.stl` - Battery compartment housing  
+- `case.stl` - Main enclosure for electronics
+- `lid.stl` - Top cover for the case
+- `servo_holder.stl` - Servo mounting bracket
 
 **Note**: Current STL files are designed for the [TowerPro MG996R servo](https://a.co/d/hh7hMv6). Files for the updated [TowerPro MG995 servo](https://a.co/d/5FDcMUa) are not yet available.
 
@@ -141,21 +138,14 @@ const int LED_PIN = 15;       // User status LED
 ## 🔧 Installation Steps
 
 ### 1. 3D Printing
-Print the required components using the provided STL files:
-```bash
-# Required prints:
-- case.stl (main electronics enclosure)
-- lid.stl (case cover)
-- servo_holder.stl (servo mounting bracket)
-- bar_to_hold_servo.stl (servo attachment bar)
-- batteryholder.stl (battery compartment, optional)
-```
+Print the required STL files from this repository:
+- `case.stl` - Electronics enclosure
+- `lid.stl` - Case cover  
+- `servo_holder.stl` - Servo mounting bracket
+- `bar_to_hold_servo.stl` - Servo attachment bar
+- `batteryholder.stl` - Battery compartment (optional)
 
-**Print Settings:**
-- Layer Height: 0.2mm
-- Infill: 20-30%
-- Supports: Required for overhangs
-- Material: PLA or PETG recommended
+**Print Settings:** 0.2mm layer height, 20-30% infill, PLA/PETG material
 
 ### 2. Hardware Assembly
 1. Install servo in printed servo holder
@@ -177,26 +167,15 @@ Print the required components using the provided STL files:
 4. Verify servo operation and auto-close
 5. Test 3D printed mechanism operation
 
-## 📁 Repository Structure
+## 📁 Files in Repository
 
-```
-📦 ESP32-C6-Telegram-Door-Lock/
-├── 📄 README.md                    - This documentation
-├── 📄 telegram_door_lock.ino       - Main Arduino sketch
-├── 📄 LICENSE                      - MIT License
-├── 📁 3D_Models/                   - STL files for 3D printing
-│   ├── 📄 bar_to_hold_servo.stl    - Servo mounting bar
-│   ├── 📄 batteryholder.stl        - Battery compartment
-│   ├── 📄 case.stl                 - Electronics enclosure
-│   ├── 📄 lid.stl                  - Case cover
-│   └── 📄 servo_holder.stl         - Servo bracket
-├── 📁 docs/                        - Additional documentation
-│   ├── 📄 wiring_diagram.png       - Connection diagram
-│   └── 📄 assembly_guide.md        - Detailed assembly instructions
-└── 📁 examples/                    - Example configurations
-    ├── 📄 basic_config.h           - Basic setup example
-    └── 📄 advanced_config.h        - Multi-user setup example
-```
+- `README.md` - This documentation
+- `College_Dorm_Code.ino` - Main Arduino sketch  
+- `bar_to_hold_servo.stl` - Servo mounting bar (3D print)
+- `batteryholder.stl` - Battery compartment (3D print)
+- `case.stl` - Electronics enclosure (3D print)
+- `lid.stl` - Case cover (3D print)
+- `servo_holder.stl` - Servo bracket (3D print)
 
 ## 📡 Arduino ESP32 Telegram Integration
 
