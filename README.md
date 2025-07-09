@@ -2,7 +2,7 @@
 
 A secure, remote door control system using ESP32-C6 and Telegram Bot API. Control your door lock from anywhere in the world using your smartphone!
 
-![ESP32-C6 Door Control](https://img.shields.io/badge/ESP32--C6-Telegram%20Bot-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![Arduino IDE](https://img.shields.io/badge/Arduino%20IDE-Compatible-orange)
+
 
 ## 📋 Table of Contents
 - [Features](#features)
@@ -38,7 +38,7 @@ A secure, remote door control system using ESP32-C6 and Telegram Bot API. Contro
 ### Core Components
 - **[Seeed Studio XIAO ESP32-C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html)** - Main microcontroller
 - **[SONOFF 5V Relay Module](https://a.co/d/8S7qjCs)** - Controls power to servo
-- **[Rechargeable Battery Pack](https://a.co/d/4TOVGFS)** - Backup power
+- **[Internal Battery - 3.7V 602030 LiPo](https://a.co/d/1w1Zyej)** - Internal backup power
 - **[2.4G WiFi Antenna](https://a.co/d/gJ13i0S)** - Enhanced WiFi range
 
 ### Servo Motors (Choose One)
@@ -48,7 +48,7 @@ A secure, remote door control system using ESP32-C6 and Telegram Bot API. Contro
 ### Additional Components
 - Jumper wires
 - Breadboard or PCB
-- 3.7V Lithium battery (optional)
+- **[3.7V 602030 LiPo Battery](https://a.co/d/1w1Zyej)** - Internal backup power
 - External antenna (optional for better range)
 
 ## 💻 Software Requirements
@@ -319,7 +319,9 @@ When you encounter problems with ESP32C6, you can try to put XIAO into BootLoade
 ## 🔋 Power Management
 
 ### Battery Configuration
-The XIAO ESP32C6 features a built-in power management chip, allowing it to be powered independently by a battery or to charge the battery through its USB port.
+The XIAO ESP32C6 features a built-in power management chip, allowing it to be powered independently by a battery or to charge the battery through its USB port. The recommended battery is a **[3.7V 602030 LiPo battery](https://a.co/d/1w1Zyej)** which fits perfectly with the XIAO form factor.
+
+When connecting the battery to your XIAO, carefully distinguish between the positive and negative terminals. The negative electrode pad should be located on the left side near the silk screen marking "D8," while the positive electrode pad should be located on the right side near the silk screen marking "D5."
 
 ```cpp
 // Battery voltage monitoring
