@@ -1,305 +1,389 @@
-# ESP32-C6 Telegram-Controlled Door Lock
+# ESP32-C6 Telegram Door Control System
 
-A secure, multi-user Telegram bot system for controlling door locks remotely using an ESP32-C6 microcontroller. Features 270° servo rotation, power management, and real-time notifications.
+A secure, remote door control system using ESP32-C6 and Telegram Bot API. Control your door lock from anywhere in the world using your smartphone!
 
-## 🔥 Features
+![ESP32-C6 Door Control](https://img.shields.io/badge/ESP32--C6-Telegram%20Bot-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![Arduino IDE](https://img.shields.io/badge/Arduino%20IDE-Compatible-orange)
 
-- **Multi-User Security**: Supports multiple authorized users with ID verification
-- **270° Servo Control**: Full rotation lock mechanism with gradual movement
-- **Power Management**: Intelligent relay control with servo power optimization
-- **Auto-Close**: 10-second auto-close with countdown notifications
-- **Real-Time Alerts**: All users notified when door is opened/closed
-- **WiFi Status**: Built-in connection monitoring and recovery
-- **Secure Authentication**: User ID verification prevents unauthorized access
+## 📋 Table of Contents
+- [Features](#features)
+- [Hardware Requirements](#hardware-requirements)
+- [Software Requirements](#software-requirements)
+- [Hardware Setup](#hardware-setup)
+- [Software Setup](#software-setup)
+- [Telegram Bot Setup](#telegram-bot-setup)
+- [Arduino IDE Configuration](#arduino-ide-configuration)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Commands](#commands)
+- [Wiring Diagram](#wiring-diagram)
+- [3D Printed Parts](#3d-printed-parts)
+- [Troubleshooting](#troubleshooting)
+- [Security Features](#security-features)
+- [Contributing](#contributing)
+- [License](#license)
 
-## 📱 Bot Commands
+## ✨ Features
 
-- `/start` - Welcome message and command list
-- `/open` - Open door for 10 seconds
-- `/status` - Check door status and remaining time
-- `/help` - Show detailed help information
+- **Remote Control**: Control your door from anywhere with internet connection
+- **Secure Access**: Multi-user authorization with unique Telegram user IDs
+- **Auto-lock**: Automatic door closure after 10 seconds
+- **Real-time Notifications**: All authorized users get notified when door is opened
+- **Status Monitoring**: Check door status and WiFi information
+- **Power Management**: Optimized servo control to prevent overheating
+- **Battery Support**: Built-in battery charging and monitoring
+- **Fail-safe Design**: WiFi reconnection and error handling
 
 ## 🛠 Hardware Requirements
 
-### Microcontroller
-- **[Seeed Studio XIAO ESP32C6](https://a.co/d/8S7qjCs)** - Main controller with WiFi 6 and Bluetooth 5.3
+### Core Components
+- **[Seeed Studio XIAO ESP32-C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html)** - Main microcontroller
+- **[SONOFF 5V Relay Module](https://a.co/d/8S7qjCs)** - Controls power to servo
+- **[Rechargeable Battery Pack](https://a.co/d/4TOVGFS)** - Backup power
+- **[2.4G WiFi Antenna](https://a.co/d/gJ13i0S)** - Enhanced WiFi range
 
-### Servos
-- **Current Working Servo**: [TowerPro MG996R](https://a.co/d/hh7hMv6) - Metal gear servo (180°)
-- **Updated Servo**: [TowerPro MG995](https://a.co/d/5FDcMUa) - High torque servo (Note: STL files not yet updated for this servo)
+### Servo Motors (Choose One)
+- **Current Compatible**: [DS3235MG Servo](https://a.co/d/hh7hMv6) *(STL files available)*
+- **Updated Model**: [High Torque Servo](https://a.co/d/5FDcMUa) *(STL files need updating)*
 
-### Electronics
-- **[Relay Module](https://a.co/d/4TOVGFS)** - Controls servo power supply
-- **[Jumper Wires](https://a.co/d/gJ13i0S)** - For connections
+### Additional Components
+- Jumper wires
+- Breadboard or PCB
+- 3.7V Lithium battery (optional)
+- External antenna (optional for better range)
 
-### 3D Printed Components
-The following STL files are included in this repository:
+## 💻 Software Requirements
 
-- `bar_to_hold_servo.stl` - Mounting bracket for servo attachment
-- `batteryholder.stl` - Battery compartment housing  
-- `case.stl` - Main enclosure for electronics
-- `lid.stl` - Top cover for the case
-- `servo_holder.stl` - Servo mounting bracket
+- **Arduino IDE** (version 1.8.13 or later)
+- **ESP32 Board Package** (version 3.0.0 or later)
+- **Required Libraries**:
+  - UniversalTelegramBot
+  - ArduinoJson (version 6.15.2 or later)
+  - ESP32Servo
+  - WiFiClientSecure
 
-**Note**: Current STL files are designed for the [TowerPro MG996R servo](https://a.co/d/hh7hMv6). Files for the updated [TowerPro MG995 servo](https://a.co/d/5FDcMUa) are not yet available.
+## 🔧 Hardware Setup
 
-### Power Supply
-- 5V/2A power adapter (for servo power)
-- USB-C cable for ESP32-C6 programming
-- 3.7V Li-Po battery (optional, for backup power)
+### ESP32-C6 Setup
+
+The **Seeed Studio XIAO ESP32-C6** is a powerful, compact development board perfect for IoT projects:
+
+#### Key Specifications
+- **Processor**: Dual 32-bit RISC-V processors (160 MHz + 20 MHz)
+- **Memory**: 512KB SRAM, 4MB Flash
+- **Connectivity**: WiFi 6, Bluetooth 5.3, Zigbee, Thread
+- **Size**: 21 x 17.8mm (ultra-compact)
+- **Power**: Deep sleep mode (~15 µA)
+
+#### Pin Configuration
+```
+GPIO Pins Used:
+- GPIO 18: Relay control
+- GPIO 17: Servo signal
+- GPIO 15: Status LED
+- GPIO 3:  WiFi RF switch control
+- GPIO 14: Antenna selection
+```
+
+### Wiring Connections
+
+```
+ESP32-C6    →    Component
+────────────────────────────
+GPIO 18     →    Relay IN
+GPIO 17     →    Servo Signal (Orange/Yellow)
+GPIO 15     →    LED + (through 220Ω resistor)
+3.3V        →    Relay VCC, Servo VCC (Red)
+GND         →    Relay GND, Servo GND (Black/Brown), LED -
+5V          →    External servo power (when available)
+```
+
+### Power Management
+The system uses intelligent power management:
+1. **Relay Control**: Powers servo only when needed
+2. **Battery Backup**: Automatic switching to battery power
+3. **Deep Sleep**: Ultra-low power consumption when idle
+
+## 📱 Telegram Bot Setup
+
+### Step 1: Create Your Bot with BotFather
+
+BotFather is Telegram's official bot creation tool. To get started, message @BotFather on Telegram to register your bot and receive its authentication token.
+
+1. **Open Telegram** and search for `@BotFather`
+2. **Start a conversation** and send `/newbot`
+3. **Choose a name** for your bot (e.g., "My Door Control")
+4. **Choose a username** ending with "bot" (e.g., "mydoor_control_bot")
+5. **Save the token** - this is your `BOT_TOKEN`
+
+### Step 2: Get Your User ID
+
+In your Telegram account, search for "IDBot" or open this link t.me/myidbot on your smartphone. Start a conversation with that bot and type /getid. You will get a reply back with your user ID.
+
+1. Search for `@myidbot` in Telegram
+2. Start a conversation and send `/getid`
+3. **Save your User ID** - this goes in `AUTHORIZED_USERS[]`
+
+### Step 3: Configure Bot Commands (Optional)
+
+You can set up bot commands by going to @BotFather > /mybots > Your_Bot_Name > Edit Bot > Edit Commands.
+
+Add these commands:
+```
+start - Welcome message and help
+open - Open door for 10 seconds
+status - Check door status
+help - Show available commands
+```
+
+## ⚙️ Arduino IDE Configuration
+
+### Step 1: Install ESP32-C6 Board Support
+
+To install the XIAO ESP32C6 board, add the board manager URL to the preferences of your Arduino IDE.
+
+1. **Open Arduino IDE**
+2. **Go to File → Preferences**
+3. **Add this URL** to "Additional Board Manager URLs":
+   ```
+   https://espressif.github.io/arduino-esp32/package_esp32_index.json
+   ```
+4. **Open Tools → Board → Boards Manager**
+5. **Search for "esp32"** and install version **3.0.0 or later**
+6. **Select Board**: Tools → Board → ESP32 Arduino → **XIAO_ESP32C6**
+
+### Step 2: Install Required Libraries
+
+To establish communication with the Telegram bot, we'll be using the Universal Telegram Bot Library created by Brian Lough that provides an easy interface for Telegram Bot API.
+
+Install these libraries via **Tools → Manage Libraries**:
+
+1. **UniversalTelegramBot** by Brian Lough
+2. **ArduinoJson** by Benoît Blanchon (version 6.15.2+)
+3. **ESP32Servo** (included with ESP32 core)
+
+## 📥 Installation
+
+### Step 1: Clone Repository
+```bash
+git clone https://github.com/yourusername/esp32-telegram-door-control.git
+cd esp32-telegram-door-control
+```
+
+### Step 2: Configure Settings
+Open the Arduino sketch and update these variables:
+
+```cpp
+// WiFi credentials
+const char* ssid = "your_wifi_name";
+const char* password = "your_wifi_password";
+
+// Telegram Bot settings
+#define BOT_TOKEN "your_bot_token_from_botfather"
+
+// Authorized users (add up to 3 user IDs)
+const String AUTHORIZED_USERS[] = {"123456789"}; // Your Telegram user ID
+const int NUM_AUTHORIZED_USERS = 1;
+```
+
+### Step 3: Upload Code
+1. **Connect ESP32-C6** via USB-C cable
+2. **Select correct port** in Tools → Port
+3. **Upload the sketch**
+
+### Step 4: Monitor Serial Output
+- Open **Tools → Serial Monitor**
+- Set baud rate to **115200**
+- Verify WiFi connection and bot initialization
+
+## 🎮 Usage
+
+### First Time Setup
+1. **Power on** the ESP32-C6
+2. **Wait for WiFi connection** (check Serial Monitor)
+3. **Open Telegram** and find your bot
+4. **Send `/start`** to begin
+
+### Daily Operation
+- **`/open`** - Opens door for 10 seconds
+- **`/status`** - Check current door state
+- **`/help`** - Show all commands
+
+### Notifications
+- All authorized users receive notifications when:
+  - Door is opened by someone
+  - Door closes automatically
+  - System status changes
+
+## 📋 Commands
+
+| Command | Description | Response |
+|---------|-------------|----------|
+| `/start` | Initialize bot and show welcome | Welcome message with available commands |
+| `/open` | Open door for 10 seconds | "🔓 Door opened! Will close in 10 seconds" |
+| `/status` | Check door and system status | Door state, WiFi IP, time remaining |
+| `/help` | Show help information | Complete command list and instructions |
 
 ## 🔌 Wiring Diagram
 
 ```
-ESP32-C6 Pin Connections:
-├─ GPIO 18 → Relay Control Pin
-├─ GPIO 17 → Servo Signal Wire (PWM)
-├─ GPIO 15 → Status LED
-├─ 5V → Relay VCC
-├─ GND → Relay GND & Servo GND
-└─ Servo VCC → Relay Output (Switched 5V)
+    ESP32-C6 XIAO
+    ┌─────────────┐
+    │ ┌─┐     ┌─┐ │
+    │ └─┘ USB └─┘ │
+    │             │
+    │  18 ────────┼─── Relay IN
+    │  17 ────────┼─── Servo Signal (Orange)
+    │  15 ────────┼─── LED + (220Ω resistor)
+    │ 3V3 ────────┼─── Relay VCC, Servo VCC (Red)
+    │ GND ────────┼─── Relay GND, Servo GND (Black)
+    │   5V────────┼─── External Servo Power
+    └─────────────┘
+
+    Relay Module        Servo Motor
+    ┌─────────┐        ┌─────────┐
+    │   VCC   │        │   VCC   │ Red
+    │   GND   │        │   GND   │ Black  
+    │   IN    │        │  Signal │ Orange
+    │   COM   │◄──────►│         │
+    │   NO    │        └─────────┘
+    └─────────┘
 ```
 
-## 📚 Setup Documentation
+## 🎯 3D Printed Parts
 
-### ESP32-C6 Board Setup
-Follow the official Seeed Studio guide for setting up your ESP32-C6 development environment:
-**[XIAO ESP32C6 Getting Started Guide](https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/)**
+### Current STL Files
+Compatible with **[DS3235MG Servo](https://a.co/d/hh7hMv6)**:
+- Door mount bracket
+- Servo housing
+- Lock mechanism
 
-### Required Arduino Libraries
+### Updated Servo
+**[High Torque Servo](https://a.co/d/5FDcMUa)** - *STL files need updating for this model*
 
-1. **WiFi** - Built into ESP32 core
-2. **WiFiClientSecure** - Built into ESP32 core  
-3. **[UniversalTelegramBot](https://github.com/witnessmenow/Universal-Arduino-Telegram-Bot)** by Brian Lough
-4. **[ArduinoJson](https://arduinojson.org/)** (version 6.15.2 or later)
-5. **[ESP32Servo](https://github.com/madhephaestus/ESP32Servo)** 
+> **Note**: If you choose the updated servo, you'll need to modify the STL files or design new mounts.
 
-Install via Arduino IDE Library Manager:
-```
-Sketch → Include Library → Manage Libraries
-Search: "UniversalTelegramBot", "ArduinoJson", "ESP32Servo"
-```
+## 🔧 Troubleshooting
 
-## 🤖 Telegram Bot Setup
-
-### Step 1: Create Your Bot with BotFather
-
-BotFather is Telegram's official bot for creating and managing other bots. Follow these steps:
-
-1. **Open Telegram** and search for `@BotFather`
-2. **Start conversation** and send `/newbot`
-3. **Choose bot name** (e.g., "My Door Lock Bot")
-4. **Choose username** (must end with "bot", e.g., "mydoorlock_bot")
-5. **Save the token** - You'll receive something like: `1234567890:ABCdefGHIjklMNOpqrsTUVwxyz`
-
-📖 **Official Documentation**: [Telegram Bot Introduction](https://core.telegram.org/bots)
-
-### Step 2: Get Your User ID
-
-To authorize users, you need their Telegram user IDs:
-
-1. **Search for** `@myidbot` in Telegram
-2. **Start conversation** and send `/getid`
-3. **Note the number** - This is your unique user ID
-
-### Step 3: Add Multiple Users
-
-To add more people to your door lock system:
-
-**For each person you want to authorize:**
-
-1. **They need to get their own User ID:**
-   - Tell them to search for `@myidbot` in Telegram
-   - Have them start a conversation and send `/getid`
-   - They'll receive their unique user ID number
-   - Ask them to share this number with you
-
-2. **Add their ID to your code:**
-   ```cpp
-   // Update the AUTHORIZED_USERS array with all user IDs
-   const String AUTHORIZED_USERS[] = {
-     "123456789",    // Your user ID
-     "987654321",    // Friend's user ID  
-     "555666777"     // Family member's user ID
-   };
-   const int NUM_AUTHORIZED_USERS = 3; // Update this count
-   ```
-
-3. **Re-upload the code** to your ESP32-C6
-
-**Important Notes:**
-- User IDs are numbers, but keep them in quotes in the code
-- You can authorize up to multiple users (modify array size as needed)
-- Each person must have the Telegram app installed
-- They can find your bot by searching for its username
-
-### Step 4: Test Your Bot
-
-1. Search for your bot's username in Telegram
-2. Send `/start` to begin conversation
-3. Your bot won't respond yet (we haven't programmed it!)
-
-## ⚙️ Arduino Code Configuration
-
-### Required Credentials
-
-Update these values in the Arduino code:
-
+### WiFi Connection Issues
 ```cpp
-// WiFi Credentials
-const char* ssid = "your_wifi_name";
-const char* password = "your_wifi_password";
-
-// Telegram Bot Configuration
-#define BOT_TOKEN "your_bot_token_from_botfather"
-
-// Authorized Users (Add up to 3 user IDs)
-const String AUTHORIZED_USERS[] = {"your_user_id", "friend_user_id", "family_user_id"};
-const int NUM_AUTHORIZED_USERS = 3; // Update this number
+// Check Serial Monitor for these messages:
+"Connecting to WiFi..." - Normal startup
+"WiFi connected!" - Success
+"Failed to connect!" - Check credentials
 ```
 
-### Hardware Pin Configuration
+### Bot Not Responding
+1. **Verify bot token** in code
+2. **Check user ID** in AUTHORIZED_USERS
+3. **Confirm internet connection**
+4. **Test with `/start` command**
 
-```cpp
-const int RELAY_PIN = 18;     // GPIO18 controls relay 
-const int SERVO_PIN = 17;     // GPIO17 controls servo
-const int LED_PIN = 15;       // User status LED
+### Servo Not Moving
+1. **Check relay clicking sound**
+2. **Verify servo connections**
+3. **Test servo power supply**
+4. **Ensure relay is working**
+
+### Authorization Failures
+```
+"❌ Unauthorized access" - User ID not in authorized list
 ```
 
-## 🔧 Installation Steps
+### ESP32-C6 Specific Issues
 
-### 1. 3D Printing
-Print the required STL files from this repository:
-- `case.stl` - Electronics enclosure
-- `lid.stl` - Case cover  
-- `servo_holder.stl` - Servo mounting bracket
-- `bar_to_hold_servo.stl` - Servo attachment bar
-- `batteryholder.stl` - Battery compartment (optional)
+When you encounter problems with ESP32C6, you can try to put XIAO into BootLoader mode, which can solve most of the problems of unrecognized devices and failed uploads.
 
-**Print Settings:** 0.2mm layer height, 20-30% infill, PLA/PETG material
-
-### 2. Hardware Assembly
-1. Install servo in printed servo holder
-2. Connect components according to wiring diagram
-3. Mount ESP32-C6 in printed case
-4. Secure all connections and close case
-5. Test servo rotation range (0° to 270°)
-
-### 3. Software Setup
-1. Install Arduino IDE with ESP32-C6 support
-2. Install required libraries
-3. Configure credentials in code
-4. Upload to ESP32-C6
-
-### 4. Testing
-1. Monitor Serial output (115200 baud)
-2. Verify WiFi connection
-3. Test Telegram bot communication
-4. Verify servo operation and auto-close
-5. Test 3D printed mechanism operation
-
-## 📁 Files in Repository
-
-- `README.md` - This documentation
-- `College_Dorm_Code.ino` - Main Arduino sketch  
-- `bar_to_hold_servo.stl` - Servo mounting bar (3D print)
-- `batteryholder.stl` - Battery compartment (3D print)
-- `case.stl` - Electronics enclosure (3D print)
-- `lid.stl` - Case cover (3D print)
-- `servo_holder.stl` - Servo bracket (3D print)
-
-## 📡 Arduino ESP32 Telegram Integration
-
-The project uses the **Universal Telegram Bot Library** which provides:
-- Easy interface for Telegram Bot API with support for multiple Arduino architectures
-- Simple message handling and command processing
-- Secure HTTPS communication with Telegram servers
-
-### Key Library Features Used:
-- `bot.getUpdates()` - Fetch new messages
-- `bot.sendMessage()` - Send responses to users  
-- `WiFiClientSecure` - Encrypted communication
-- Certificate validation for security
-
-📖 **Library Documentation**: [Universal Telegram Bot GitHub](https://github.com/witnessmenow/Universal-Arduino-Telegram-Bot)
+**BootLoader Mode**:
+1. Press and hold **BOOT** button
+2. Connect USB cable while holding BOOT
+3. Release BOOT button
+4. Upload code
 
 ## 🔒 Security Features
 
-- **User ID Authentication**: Only authorized users can control the door
-- **Secure Token Storage**: Bot token should be kept private
-- **HTTPS Communication**: All Telegram communication is encrypted
-- **Access Logging**: All access attempts logged to Serial monitor
-- **Auto-Close Safety**: Door automatically closes after 10 seconds
+### Multi-User Authorization
+- **User ID Verification**: Only authorized Telegram user IDs can control the door
+- **Session Management**: Each command is verified before execution
+- **Audit Trail**: All access attempts are logged to Serial Monitor
 
-## 🚨 Safety Considerations
+### Network Security
+- **WPA2/WPA3 WiFi**: Secure wireless connection
+- **HTTPS**: All Telegram API calls use encrypted connection
+- **Token Protection**: Bot token should be kept secret
 
-⚠️ **Important Safety Notes:**
-- Always test the system thoroughly before deployment
-- Ensure backup physical key access
-- Monitor power supply stability
-- Test emergency scenarios
-- Consider fire safety regulations
-- Verify servo mounting security
+### Physical Security
+- **Auto-lock**: Door automatically closes after 10 seconds
+- **Power Failure Safe**: Battery backup maintains security
+- **Manual Override**: Physical reset button available
 
-## 🔧 Power Management
+## 🔋 Power Management
 
-The system implements intelligent power management:
+### Battery Configuration
+The XIAO ESP32C6 features a built-in power management chip, allowing it to be powered independently by a battery or to charge the battery through its USB port.
 
-1. **Servo Attachment**: Only when needed for operation
-2. **Relay Control**: Powers servo only during movement
-3. **Gradual Movement**: Reduces current spikes
-4. **Auto-Detachment**: Servo detached after closing to save power
+```cpp
+// Battery voltage monitoring
+uint32_t Vbatt = 0;
+for(int i = 0; i < 16; i++) {
+    Vbatt += analogReadMilliVolts(A0);
+}
+float Vbattf = 2 * Vbatt / 16 / 1000.0; // Convert to volts
+```
 
-## 📊 Status Monitoring
+### Power Modes
+- **Active Mode**: ~30mA (door operations)
+- **Light Sleep**: ~2.5mA (waiting for commands)
+- **Deep Sleep**: ~15µA (extended idle periods)
 
-Monitor system status through:
-- **Serial Monitor**: Debug information and connection status
-- **LED Indicator**: Visual feedback on GPIO 15
-- **Telegram Notifications**: Real-time door status updates
-- **WiFi Signal**: Connection strength monitoring
+## 🤝 Contributing
 
-## 🛠 Troubleshooting
+We welcome contributions! Please follow these steps:
 
-### Common Issues:
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Commit changes**: `git commit -m 'Add amazing feature'`
+4. **Push to branch**: `git push origin feature/amazing-feature`
+5. **Open a Pull Request**
 
-**Bot Not Responding:**
-- Check WiFi connection
-- Verify bot token is correct
-- Ensure user ID is authorized
-- Check Serial monitor for errors
+### Areas for Contribution
+- STL file updates for new servo motor
+- Additional security features
+- Power optimization
+- Mobile app interface
+- Documentation improvements
 
-**Servo Not Moving:**
-- Verify power supply (5V/2A minimum)
-- Check wiring connections
-- Test servo separately
-- Monitor relay operation
+## 📚 Additional Resources
 
-**WiFi Connection Issues:**
-- Verify SSID and password
-- Check signal strength
-- Try manual reset
-- Monitor Serial for connection attempts
+### Documentation Links
+- **[ESP32-C6 Getting Started Guide](https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/)**
+- **[Telegram Bot API Documentation](https://core.telegram.org/bots/api)**
+- **[Universal Arduino Telegram Bot Library](https://github.com/witnessmenow/Universal-Arduino-Telegram-Bot)**
+- **[ESP32 Arduino Core Documentation](https://docs.espressif.com/projects/arduino-esp32/en/latest/)**
+
+### Hardware Datasheets
+- [ESP32-C6 Technical Reference](https://files.seeedstudio.com/wiki/SeeedStudio-XIAO-ESP32C6/res/esp32-c6_datasheet_en.pdf)
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 🙏 Acknowledgments
 
-For technical support:
-- **Hardware Issues**: Check [Seeed Studio XIAO ESP32C6 Wiki](https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/)
-- **Telegram Bot Help**: [Telegram Bot Documentation](https://core.telegram.org/bots)
-- **Arduino ESP32**: [ESP32 Arduino Core Documentation](https://docs.espressif.com/projects/arduino-esp32/)
-
-## ⭐ Acknowledgments
-
-- [Brian Lough](https://github.com/witnessmenow) for the Universal Telegram Bot Library
-- [Seeed Studio](https://www.seeedstudio.com/) for the XIAO ESP32C6 board
-- Telegram team for the excellent Bot API
-- Arduino and Espressif communities
+- **Espressif Systems** for the ESP32-C6 chip
+- **Seeed Studio** for the XIAO ESP32-C6 board
+- **Brian Lough** for the Universal Telegram Bot Library
+- **Telegram Team** for the excellent Bot API
+- **Arduino Community** for the development environment
 
 ---
 
-**⚡ Quick Start**: Flash the code, update your credentials, and start controlling your door with Telegram in minutes!
+## 🚀 Quick Start Summary
 
-**🔐 Security First**: Always test thoroughly and maintain physical backup access to your door.
+1. **Hardware**: Connect relay to GPIO18, servo to GPIO17
+2. **Software**: Install Arduino IDE + ESP32 board + libraries
+3. **Telegram**: Create bot with @BotFather, get token and user ID
+4. **Code**: Update WiFi credentials, bot token, and user ID
+5. **Upload**: Flash code to ESP32-C6
+6. **Test**: Send `/start` to your bot!
+
+**Happy Building! 🏠🔐**
