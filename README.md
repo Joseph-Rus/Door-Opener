@@ -102,7 +102,38 @@ To authorize users, you need their Telegram user IDs:
 2. **Start conversation** and send `/getid`
 3. **Note the number** - This is your unique user ID
 
-### Step 3: Test Your Bot
+### Step 3: Add Multiple Users
+
+To add more people to your door lock system:
+
+**For each person you want to authorize:**
+
+1. **They need to get their own User ID:**
+   - Tell them to search for `@myidbot` in Telegram
+   - Have them start a conversation and send `/getid`
+   - They'll receive their unique user ID number
+   - Ask them to share this number with you
+
+2. **Add their ID to your code:**
+   ```cpp
+   // Update the AUTHORIZED_USERS array with all user IDs
+   const String AUTHORIZED_USERS[] = {
+     "123456789",    // Your user ID
+     "987654321",    // Friend's user ID  
+     "555666777"     // Family member's user ID
+   };
+   const int NUM_AUTHORIZED_USERS = 3; // Update this count
+   ```
+
+3. **Re-upload the code** to your ESP32-C6
+
+**Important Notes:**
+- User IDs are numbers, but keep them in quotes in the code
+- You can authorize up to multiple users (modify array size as needed)
+- Each person must have the Telegram app installed
+- They can find your bot by searching for its username
+
+### Step 4: Test Your Bot
 
 1. Search for your bot's username in Telegram
 2. Send `/start` to begin conversation
