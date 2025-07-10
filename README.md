@@ -91,12 +91,15 @@ GPIO Pins Used:
 ```
 ESP32-C6    →    Component
 ────────────────────────────
-GPIO 18     →    Relay IN
+GPIO 18     →    Relay IN (Signal)
 GPIO 17     →    Servo Signal (Orange/Yellow)
 GPIO 15     →    LED + (through 220Ω resistor)
-3.3V        →    Relay VCC, Servo VCC (Red)
+5V          →    Relay VCC
 GND         →    Relay GND, Servo GND (Black/Brown), LED -
-5V          →    External servo power (when available)
+
+Relay Connections:
+COM         →    5V Power Supply
+NO          →    Servo VCC (Red)
 ```
 
 ### Power Management
@@ -233,22 +236,28 @@ const int NUM_AUTHORIZED_USERS = 1;
     │ ┌─┐     ┌─┐ │
     │ └─┘ USB └─┘ │
     │             │
-    │  18 ────────┼─── Relay IN
+    │  18 ────────┼─── Relay IN (Signal)
     │  17 ────────┼─── Servo Signal (Orange)
     │  15 ────────┼─── LED + (220Ω resistor)
-    │ 3V3 ────────┼─── Relay VCC, Servo VCC (Red)
+    │  5V ────────┼─── Relay VCC
     │ GND ────────┼─── Relay GND, Servo GND (Black)
-    │   5V────────┼─── External Servo Power
     └─────────────┘
-
+           │
+           │ 5V Power Supply
+           ▼
     Relay Module        Servo Motor
     ┌─────────┐        ┌─────────┐
-    │   VCC   │        │   VCC   │ Red
-    │   GND   │        │   GND   │ Black  
-    │   IN    │        │  Signal │ Orange
-    │   COM   │◄──────►│         │
-    │   NO    │        └─────────┘
-    └─────────┘
+    │   VCC   │◄──5V───│         │
+    │   GND   │◄──GND──│   GND   │ Black
+    │   IN    │◄──18───│         │
+    │   COM   │◄──5V───┤         │
+    │   NO    │────────┤   VCC   │ Red
+    │         │        │  Signal │ Orange ──► GPIO 17
+    └─────────┘        └─────────┘
+
+Power Flow:
+5V Supply → Relay COM → Relay NO → Servo VCC
+(Relay acts as power switch for servo)
 ```
 
 ## 🎯 3D Printed Parts
