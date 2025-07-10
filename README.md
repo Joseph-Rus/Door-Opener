@@ -88,6 +88,9 @@ GPIO Pins Used:
 
 ### Wiring Connections
 
+![image](https://github.com/user-attachments/assets/10716a52-6fe0-4abc-9669-7c66254a7a07)
+
+
 ```
 ESP32-C6    →    Component
 ────────────────────────────
